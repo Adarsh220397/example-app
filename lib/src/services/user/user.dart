@@ -31,6 +31,8 @@ class UserService {
       list = stateCollectionRef.docs
           .map((doc) => UserModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
+
+      list.removeWhere((element) => element.ipAddress.isEmpty);
     } catch (e) {
       print('------error-$e');
       return list;
