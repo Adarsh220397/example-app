@@ -20,7 +20,6 @@ class FirebasePhoneAuth {
             phoneNumber: phoneNumber.toString(),
             timeout: const Duration(seconds: 60),
             verificationCompleted: (PhoneAuthCredential auth) {
-              print("Auth Data" + auth.toString());
               phoneAuthListener.onVerificationCompleted(auth.smsCode);
               /*
               FirebaseAuth.instance
@@ -69,9 +68,8 @@ class FirebasePhoneAuth {
       print(
           'result of new user signin is ${result.additionalUserInfo!.isNewUser}');
       if (result.additionalUserInfo!.isNewUser) {
-        print('---new user');
         userModel.uuid = result.user!.uid;
-        await UserService.instance.addUser(userModel);
+        await UserService.instance.addUserInformation(userModel);
       }
 
       await phoneAuthListener.onAuthenticationSuccess(result.user);

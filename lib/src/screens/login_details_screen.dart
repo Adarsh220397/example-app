@@ -10,7 +10,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../services/user/user.dart';
-import '../utils/circular_progress_indicator_ui.dart';
+import '../utils/circle_shaped_widget.dart';
 
 class LoginDetails extends StatefulWidget {
   const LoginDetails({super.key});
@@ -33,18 +33,14 @@ class _LoginDetailsState extends State<LoginDetails> {
     fetchData();
   }
 
-  fetchData() async {
-    print(AppConstants.userModel.mobileNumber);
+  Future<void> fetchData() async {
     list = await UserService.instance
         .getCurrentUserLoginDetails(AppConstants.userModel.mobileNumber);
 
-    print('---------list--${list.length}');
-
     for (UserModel model in list) {
-      num value = calculateDifference(model.currentDate);
+      num value = calculateDifferenceBtwDates(model.currentDate);
 
       if (value == 0) {
-        ;
         todayLoginList.add(model);
       } else if (value == -1) {
         yesterdayLoggedList.add(model);
@@ -59,94 +55,77 @@ class _LoginDetailsState extends State<LoginDetails> {
   Widget build(BuildContext context) {
     themeData = Theme.of(context);
 
-    return isLoading
-        ? const CircularIndicator()
-        : DefaultTabController(
-            length: 3,
-            child: Scaffold(
-                key: _scaffoldKey,
-                body: SafeArea(
-                  child: KeyboardDismissOnTap(
-                    child: ProgressWidget(
-                        isShow: isLoading,
-                        color: Colors.black,
-                        opacity: 1,
-                        child: body()),
-                  ),
-                )),
-          );
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+          key: _scaffoldKey,
+          body: SafeArea(
+            child: KeyboardDismissOnTap(
+              child: ProgressWidget(
+                  isShow: isLoading,
+                  color: Colors.black,
+                  opacity: 1,
+                  child: loginDetailsScreenBodyUI()),
+            ),
+          )),
+    );
   }
 
-  Widget body() {
-    return Container(
-      // padding: EdgeInsets.all(10),
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            top: 10,
-            right: 15,
-            child: InkWell(
-                child: Text(
-                  'Logout',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 17, color: Colors.white),
-                ),
-                onTap: () {
-                  AuthService.logout();
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MobileNumberScreen()));
-                }),
+  Widget loginDetailsScreenBodyUI() {
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          top: 10,
+          right: 15,
+          child: InkWell(
+              child: const Text(
+                'Logout',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 17, color: Colors.white),
+              ),
+              onTap: () {
+                AuthService.logout();
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MobileNumberScreen()));
+              }),
+        ),
+        Positioned(
+          top: 0,
+          right: 50,
+          child: CustomPaint(
+            painter: OpenPainter(),
           ),
-          Positioned(
-            top: 0,
-            right: 50,
-            child: CustomPaint(
-              painter: OpenPainter(),
-            ),
-          ),
+        ),
 
-          Positioned(
-              top: MediaQuery.of(context).size.height / 10,
-              // left: 90,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: tabBarUI()),
-          //  Positioned(top: 70, left: 60, child: welcomeText()),
-          Positioned(
-            top: MediaQuery.of(context).size.height / 12,
-            right: MediaQuery.of(context).size.width / 3,
-            // width: 100,
-            //   height: MediaQuery.of(context).size.height / 15,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.lightBlue,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
-                ),
-              ),
-              padding: EdgeInsets.only(left: 10, right: 10),
-              child: Text(
-                'Last Login',
-                style: TextStyle(fontSize: 25, color: Colors.white),
+        Positioned(
+            top: MediaQuery.of(context).size.height / 10,
+            // left: 90,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: tabBarUI()),
+        //  Positioned(top: 70, left: 60, child: welcomeText()),
+        Positioned(
+          top: MediaQuery.of(context).size.height / 12,
+          right: MediaQuery.of(context).size.width / 3,
+          // width: 100,
+          //   height: MediaQuery.of(context).size.height / 15,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.lightBlue,
+              borderRadius: BorderRadius.all(
+                Radius.circular(5),
               ),
             ),
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: const Text(
+              'Last Login',
+              style: TextStyle(fontSize: 25, color: Colors.white),
+            ),
           ),
-          // Positioned(
-          //     top: MediaQuery.of(context).size.height / 2.5,
-          //     left: MediaQuery.of(context).size.width / 6,
-          //     child: stackContainer()),
-          // Positioned(
-          //     top: MediaQuery.of(context).size.height / 4,
-          //     left: MediaQuery.of(context).size.width / 3,
-          //     child: qrImageUI()),
-          // Positioned(
-          //     top: MediaQuery.of(context).size.height / 2.1,
-          //     left: MediaQuery.of(context).size.width / 2.8,
-          //     child: generatedNum())
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -161,7 +140,7 @@ class _LoginDetailsState extends State<LoginDetails> {
           ),
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               TabBar(
@@ -218,22 +197,25 @@ class _LoginDetailsState extends State<LoginDetails> {
               ),
             ),
           ),
-          list.isNotEmpty
-              ? Container(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width / 10,
-                      right: MediaQuery.of(context).size.width / 10),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ButtonWidget(text: 'SAVE', onClicked: () {}),
-                  ))
-              : const SizedBox()
+
+          // the save button can be implemented if required
+
+          // list.isNotEmpty
+          //     ? Container(
+          //         padding: EdgeInsets.only(
+          //             left: MediaQuery.of(context).size.width / 10,
+          //             right: MediaQuery.of(context).size.width / 10),
+          //         child: Padding(
+          //           padding: const EdgeInsets.all(8.0),
+          //           child: ButtonWidget(text: 'SAVE', onClicked: () {}),
+          //         ))
+          //     : const SizedBox()
         ],
       ),
     );
   }
 
-  int calculateDifference(DateTime date) {
+  int calculateDifferenceBtwDates(DateTime date) {
     DateTime now = DateTime.now();
     return DateTime(date.year, date.month, date.day)
         .difference(DateTime(now.year, now.month, now.day))
@@ -248,14 +230,11 @@ class _LoginDetailsState extends State<LoginDetails> {
             : const SizedBox(),
         Column(
           children: [
-            // SizedBox(
-            //   height: 10,
-            // ),
             Padding(
               padding: const EdgeInsets.only(
                   left: 25, bottom: 10, top: 10, right: 25),
               child: Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 decoration: const BoxDecoration(
                   color: Colors.white10,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -271,7 +250,7 @@ class _LoginDetailsState extends State<LoginDetails> {
                           style: themeData.textTheme.subtitle1!
                               .copyWith(color: Colors.white),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 2,
                         ),
                         Text(
@@ -279,7 +258,7 @@ class _LoginDetailsState extends State<LoginDetails> {
                           style: themeData.textTheme.subtitle1!
                               .copyWith(color: Colors.white),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 2,
                         ),
                         Text(
@@ -293,9 +272,6 @@ class _LoginDetailsState extends State<LoginDetails> {
                 ),
               ),
             ),
-            // SizedBox(
-            //   height: 10,
-            // )
           ],
         ),
       ],

@@ -31,12 +31,8 @@ class AuthService {
           location: '',
           generatedQRCode: '',
           qrCodePath: '',
-          // countryCode: cloudUser.countryCode,
-          // countryName: cloudUser.countryName,
           mobileNumber: cloudUser.mobileNumber,
           currentDate: DateTime.now(),
-          // firstName: cloudUser.firstName,
-          // lastName: cloudUser.lastName,
         ));
       }
     } catch (e) {
@@ -85,10 +81,6 @@ class AuthService {
 
     UserModel model = UserModel(
       uuid: _user!.uid,
-      // firstName: '',
-      // lastName: '',
-      // countryCode: '',
-      // countryName: '',
       generatedQRCode: '',
       qrCodePath: '',
       ipAddress: '',

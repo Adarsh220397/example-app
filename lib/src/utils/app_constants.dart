@@ -8,15 +8,12 @@ abstract class AppConstants {
 
   static UserModel userModel = UserModel(
     uuid: "",
-    // firstName: "",
-    // lastName: "",
-    // countryCode: "",
-    // countryName: "",
     generatedQRCode: '',
     qrCodePath: '',
     ipAddress: '',
     location: '',
     dialCode: "",
-    mobileNumber: "", currentDate: DateTime.now(),
+    mobileNumber: "",
+    currentDate: DateTime.now(),
   );
 }

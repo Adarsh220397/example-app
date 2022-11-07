@@ -20,30 +20,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         backgroundColor: Colors.black,
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Color.fromARGB(255, 1, 16, 39),
+        scaffoldBackgroundColor: const Color.fromARGB(255, 1, 16, 39),
         inputDecorationTheme: InputDecorationTheme(
           labelStyle: const TextStyle(color: Colors.white),
           hintStyle: const TextStyle(color: Colors.grey),
           focusColor: Colors.white,
-          fillColor: Color.fromARGB(255, 1, 16, 39),
+          fillColor: const Color.fromARGB(255, 1, 16, 39),
           filled: true,
-
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          // enabledBorder: OutlineInputBorder(
-          //     borderRadius: BorderRadius.circular(30),
-          //     borderSide: const BorderSide(width: 2.0, color: Colors.white10)),
-          // errorBorder: OutlineInputBorder(
-          //     borderRadius: BorderRadius.circular(5),
-          //     borderSide: BorderSide(width: 2.0, color: Colors.red.shade400)),
-          // focusedErrorBorder: OutlineInputBorder(
-          //     borderRadius: BorderRadius.circular(5),
-          //     borderSide: BorderSide(width: 2.0, color: Colors.red.shade500)),
-          // disabledBorder: OutlineInputBorder(
-          //     borderRadius: BorderRadius.circular(5),
-          //     borderSide:
-          //         const BorderSide(width: 2.0, color: ColorConstants.appCardColor)),
         ),
       ),
       home: const MobileNumberScreen(),
